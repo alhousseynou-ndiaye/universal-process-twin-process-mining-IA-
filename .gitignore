@@ -1,0 +1,15 @@
+# Environnement
+venv/
+__pycache__/
+.env
+
+# Base de données
+*.db
+
+# Fichiers d'exemples locaux
+events.csv
+process_graph.json
+
+# Éditeurs
+.vscode/
+.idea/

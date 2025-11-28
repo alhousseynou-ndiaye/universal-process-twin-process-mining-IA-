@@ -1,64 +1,119 @@
 <!DOCTYPE html>
-<html lang="fr" data-theme="dark">
+<html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Universal Process Twin – Dashboard</title>
+  <title>Universal Process Twin – Process Mining & Automation Studio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Transformez n'importe quel fichier Excel en jumeau numérique de votre processus avec IA. Visualisation, KPI, rapport consulting, idées d'automatisation Make/Zapier.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #020617;
       --bg-soft: #020617;
-      --card-bg: #020617;
-      --card-border: #1e293b;
+      --card: #020617;
+      --card-soft: #020617;
+      --border-soft: rgba(148,163,184,0.28);
+      --border-strong: rgba(148,163,184,0.55);
       --text: #e5e7eb;
       --muted: #9ca3af;
       --primary: #38bdf8;
-      --primary-soft: #0ea5e9;
+      --primary-strong: #0ea5e9;
       --accent: #f97316;
+      --danger: #fb7185;
     }
 
-    [data-theme="light"] {
-      --bg: #f3f4f6;
-      --bg-soft: #e5e7eb;
-      --card-bg: #ffffff;
-      --card-border: #e5e7eb;
-      --text: #111827;
-      --muted: #6b7280;
-      --primary: #2563eb;
-      --primary-soft: #2563eb14;
-      --accent: #f97316;
+    * {
+      box-sizing: border-box;
+      scroll-behavior: smooth;
     }
-
-    * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top left, var(--bg-soft), var(--bg));
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, #0f172a 0, #020617 45%, #020617 100%);
       color: var(--text);
+    }
+
+    .page {
       min-height: 100vh;
       display: flex;
-    }
-
-    .sidebar {
-      width: 260px;
-      background: linear-gradient(to bottom, #020617, #020617);
-      color: white;
-      padding: 24px 20px;
-      border-right: 1px solid rgba(148,163,184,0.25);
-      display: flex;
       flex-direction: column;
-      gap: 24px;
+      position: relative;
+      overflow: hidden;
     }
 
-    .brand {
+    /* Background orbs */
+    .orb {
+      position: fixed;
+      border-radius: 999px;
+      filter: blur(40px);
+      opacity: 0.35;
+      z-index: -1;
+      animation: float 16s ease-in-out infinite;
+    }
+    .orb.blue {
+      background: radial-gradient(circle at 30% 30%, #38bdf8, #1d4ed8);
+      width: 440px;
+      height: 440px;
+      top: -120px;
+      left: -120px;
+    }
+    .orb.violet {
+      background: radial-gradient(circle at 70% 70%, #a855f7, #4c1d95);
+      width: 400px;
+      height: 400px;
+      bottom: -160px;
+      right: -80px;
+      animation-delay: 2s;
+    }
+    .orb.orange {
+      background: radial-gradient(circle at 20% 80%, #f97316, #7c2d12);
+      width: 320px;
+      height: 320px;
+      bottom: 120px;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0.25;
+      animation-delay: 4s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate3d(0,0,0) scale(1); }
+      50% { transform: translate3d(0,-18px,0) scale(1.05); }
+    }
+
+    /* NAVBAR */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      background: linear-gradient(to bottom, rgba(15,23,42,0.96), rgba(15,23,42,0.65), transparent);
+      border-bottom: 1px solid rgba(148,163,184,0.32);
+    }
+
+    .nav-inner {
+      max-width: 1120px;
+      padding: 12px 20px;
+      margin: 0 auto;
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: space-between;
+      gap: 14px;
     }
-    .brand-logo {
-      width: 36px;
-      height: 36px;
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 34px;
+      height: 34px;
       border-radius: 12px;
       background: radial-gradient(circle at 30% 20%, #38bdf8, #6366f1);
       display: flex;
@@ -67,1005 +122,1119 @@
       font-weight: 800;
       font-size: 18px;
     }
-    .brand-text-title {
-      font-size: 18px;
-      font-weight: 700;
-    }
-    .brand-text-sub {
-      font-size: 11px;
-      color: #9ca3af;
-    }
 
-    .sidebar-section-title {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #6b7280;
-      margin-bottom: 4px;
-    }
-    .sidebar-links { margin-top: 4px; }
-
-    .sidebar a {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 10px;
-      color: #cbd5e1;
-      text-decoration: none;
-      font-size: 13px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.15s, color 0.15s, transform 0.1s;
-    }
-    .sidebar a span.icon {
-      width: 18px;
-      text-align: center;
-    }
-    .sidebar a:hover {
-      background: rgba(148,163,184,0.12);
-      color: #e5e7eb;
-      transform: translateX(2px);
-    }
-
-    .sidebar-footer {
-      margin-top: auto;
-      font-size: 11px;
-      color: #6b7280;
-    }
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 11px;
-      background: rgba(22,163,74,0.12);
-      color: #bbf7d0;
-      padding: 3px 8px;
-      border-radius: 999px;
-    }
-
-    .content-wrapper {
-      flex: 1;
+    .nav-brand-text {
       display: flex;
       flex-direction: column;
-      padding: 18px 22px;
-      gap: 16px;
     }
 
-    .topbar {
+    .nav-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .nav-sub {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .nav-links a {
+      color: inherit;
+      text-decoration: none;
+      position: relative;
+      padding-bottom: 2px;
+      cursor: pointer;
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 0;
+      height: 1px;
+      background: linear-gradient(to right, #38bdf8, #f97316);
+      transition: width 0.18s ease-out;
+    }
+
+    .nav-links a:hover {
+      color: #e5e7eb;
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge-beta {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      color: var(--muted);
+      background: rgba(15,23,42,0.6);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 8px rgba(34,197,94,0.8);
+    }
+
+    .btn {
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      text-decoration: none;
+      transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, background 0.12s ease-out, opacity 0.12s ease-out;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+      color: #020617;
+      font-weight: 500;
+      box-shadow: 0 13px 35px rgba(56,189,248,0.55);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 20px 50px rgba(56,189,248,0.8);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid rgba(148,163,184,0.6);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(15,23,42,0.75);
+      color: #e5e7eb;
+    }
+
+    /* HERO */
+    .hero {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 36px 20px 10px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+      gap: 32px;
+      align-items: center;
+    }
+
+    .hero-left {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      padding: 3px 10px 3px 4px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: radial-gradient(circle at top left, rgba(148,163,184,0.4), rgba(15,23,42,0.95));
+      color: var(--muted);
+    }
+
+    .hero-pill span.emoji {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 30% 20%, #22c55e, #15803d);
+    }
+
+    .hero-title {
+      margin: 16px 0 10px;
+      font-size: 2.4rem;
+      line-height: 1.1;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-title span.highlight {
+      background: linear-gradient(120deg, #38bdf8, #f97316);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 520px;
+    }
+
+    .hero-subtitle strong {
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+
+    .hero-cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+      align-items: center;
+    }
+
+    .hero-note {
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .hero-note span.check {
+      color: #22c55e;
+    }
+
+    .hero-right {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card {
+      position: relative;
+      border-radius: 20px;
+      padding: 16px 16px 14px;
+      background: radial-gradient(circle at 0 0, rgba(56,189,248,0.2), rgba(15,23,42,0.96));
+      border: 1px solid rgba(148,163,184,0.5);
+      box-shadow: 0 28px 80px rgba(15,23,42,0.9);
+      font-size: 12px;
+      overflow: hidden;
+    }
+
+    .hero-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .hero-card-title {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .hero-card-tag {
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(37,99,235,0.12);
+      color: #bfdbfe;
+      border: 1px solid rgba(59,130,246,0.4);
+    }
+
+    .hero-kpi-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 4px 0 8px;
+    }
+
+    .hero-kpi-pill {
+      font-size: 11px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.8);
+      border: 1px solid rgba(148,163,184,0.4);
+      color: #e5e7eb;
+    }
+
+    .hero-snippet {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 11px;
+      background: rgba(15,23,42,0.9);
+      border-radius: 10px;
+      border: 1px solid rgba(30,64,175,0.75);
+      padding: 8px 9px;
+      color: #e5e7eb;
+      margin-top: 4px;
+    }
+
+    .hero-snippet-line {
+      opacity: 0.9;
+    }
+
+    .hero-fake-graph {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 4px;
+    }
+
+    .hero-bar {
+      border-radius: 999px;
+      background: linear-gradient(to top, rgba(56,189,248,0.5), rgba(239,246,255,1));
+      height: 24px;
+      opacity: 0.65;
+      transform-origin: bottom;
+      animation: pulse-bar 3.2s ease-in-out infinite;
+    }
+
+    .hero-bar:nth-child(2) { height: 40px; animation-delay: 0.3s; }
+    .hero-bar:nth-child(3) { height: 30px; animation-delay: 0.6s; }
+    .hero-bar:nth-child(4) { height: 46px; animation-delay: 0.9s; }
+
+    @keyframes pulse-bar {
+      0%, 100% { transform: scaleY(1); opacity: 0.7; }
+      50% { transform: scaleY(1.15); opacity: 1; }
+    }
+
+    .hero-badge-bottom {
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--muted);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-    }
-    .topbar-left h1 {
-      margin: 0;
-      font-size: 22px;
-      letter-spacing: -0.02em;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .topbar-left p {
-      margin: 2px 0 0;
-      font-size: 12px;
-      color: var(--muted);
+      gap: 10px;
     }
 
-    .chip {
-      font-size: 11px;
-      padding: 2px 8px;
+    .hero-badge-bottom span.impact {
+      color: #a5b4fc;
+    }
+
+    .hero-badge-bottom .mini-pill {
+      font-size: 10px;
+      padding: 3px 7px;
       border-radius: 999px;
-      background: var(--primary-soft);
-      color: var(--primary);
-      border: 1px solid rgba(148,163,184,0.4);
+      background: rgba(22,163,74,0.1);
+      border: 1px solid rgba(22,163,74,0.5);
+      color: #bbf7d0;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
 
-    .topbar-right {
-      font-size: 12px;
-      color: var(--muted);
-      text-align: right;
+    /* Sections base */
+    .section {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 22px 20px 14px;
     }
-    .topbar-right span.user-email {
-      font-weight: 600;
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .section-eyebrow {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
       color: var(--accent);
+      margin-bottom: 4px;
     }
 
-    .layout-grid {
+    .section-title {
+      font-size: 18px;
+      margin: 0;
+    }
+
+    .section-subtitle {
+      margin: 4px 0 0;
+      font-size: 13px;
+      color: var(--muted);
+      max-width: 520px;
+    }
+
+    /* Social proof row */
+    .trust-row {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 6px 20px 0;
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .trust-dotline {
+      height: 1px;
+      flex: 1;
+      background-image: linear-gradient(to right, rgba(148,163,184,0.4) 30%, transparent 0%);
+      background-size: 6px 1px;
+      background-repeat: repeat-x;
+    }
+
+    .trust-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .trust-tag {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.4);
+      font-size: 11px;
+    }
+
+    /* Grid cards */
+    .grid-3 {
       display: grid;
-      grid-template-columns: minmax(0, 430px) minmax(0, 1fr);
-      gap: 18px;
-      align-items: flex-start;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 16px;
     }
 
     .card {
-      background: var(--card-bg);
-      padding: 18px 18px 16px;
-      border-radius: 14px;
-      border: 1px solid var(--card-border);
-      box-shadow: 0 18px 45px rgba(15,23,42,0.45);
-      margin-bottom: 16px;
-    }
-    .card h3 {
-      margin: 0 0 6px;
-      font-size: 15px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .card h3 span.dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: var(--primary);
-    }
-    .card-subtitle {
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 12px;
-    }
-
-    #network {
-      height: 360px;
-      border-radius: 10px;
-      background: radial-gradient(circle at top, #111827, #020617);
-    }
-
-    button {
-      padding: 9px 14px;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 999px;
-      cursor: pointer;
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.85), #020617);
+      border-radius: 18px;
+      border: 1px solid var(--border-soft);
+      padding: 14px 14px 12px;
       font-size: 13px;
+      box-shadow: 0 18px 60px rgba(15,23,42,0.95);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(56,189,248,0.1), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.2s ease-out;
+      pointer-events: none;
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-tag {
+      font-size: 11px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      margin-bottom: 3px;
+    }
+
+    .card h3 {
+      font-size: 14px;
+      margin: 0 0 4px;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* How it works */
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .step {
+      background: radial-gradient(circle at top left, rgba(30,64,175,0.55), rgba(15,23,42,0.98));
+      border-radius: 18px;
+      padding: 12px 13px 11px;
+      border: 1px solid rgba(37,99,235,0.7);
+      font-size: 13px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .step-badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
-      box-shadow: 0 8px 18px rgba(37,99,235,0.35);
-    }
-    button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 12px 25px rgba(37,99,235,0.5);
-    }
-    button#btn-ai { background: #22c55e; box-shadow: 0 8px 18px rgba(34,197,94,0.35); }
-    button#btn-pdf { background: #9333ea; box-shadow: 0 8px 18px rgba(147,51,234,0.35); margin-left: 8px; }
-    button#btn-autos { background: #f97316; box-shadow: 0 8px 18px rgba(249,115,22,0.35); }
-    button.secondary {
-      background: transparent;
-      color: var(--muted);
-      border: 1px solid rgba(148,163,184,0.4);
-      box-shadow: none;
-    }
-    button.secondary:hover {
-      background: rgba(148,163,184,0.08);
-      box-shadow: none;
-    }
-
-    input[type="email"], input[type="password"], input[type="file"], select {
-      padding: 7px 9px;
-      border-radius: 8px;
-      border: 1px solid rgba(148,163,184,0.6);
-      background: rgba(15,23,42,0.6);
-      color: var(--text);
-      font-size: 13px;
-    }
-    [data-theme="light"] input[type="email"],
-    [data-theme="light"] input[type="password"],
-    [data-theme="light"] input[type="file"],
-    [data-theme="light"] select {
-      background: #ffffff;
-    }
-    input::placeholder { color: var(--muted); }
-
-    ul { padding-left: 20px; margin: 4px 0; }
-    .loading { font-weight: bold; color: var(--primary); }
-
-    .mapping-row {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 8px;
-      align-items: center;
-    }
-    .mapping-row label {
-      width: 210px;
-      font-weight: 500;
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 2px 8px;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
       border-radius: 999px;
+      border: 1px solid rgba(191,219,254,0.7);
       font-size: 11px;
-      margin-left: 8px;
-      border: 1px solid rgba(148,163,184,0.6);
+      margin-bottom: 5px;
+      background: rgba(15,23,42,0.85);
+      color: #bfdbfe;
     }
-    .badge-good { background: #bbf7d0; color: #166534; }
-    .badge-mid  { background: #fef3c7; color: #92400e; }
-    .badge-low  { background: #fee2e2; color: #991b1b; }
 
-    #stats h3, #ai-report h3, #kpi h3, #automation h3 {
-      margin-top: 0;
-      margin-bottom: 6px;
-      font-size: 15px;
-    }
-    #ai-report p {
+    .step h3 {
       font-size: 13px;
-      line-height: 1.5;
-      color: var(--muted);
+      margin: 0 0 4px;
     }
 
-    .kpi-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 6px;
-    }
-    .kpi-pill {
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(15,23,42,0.7);
-      border: 1px solid rgba(148,163,184,0.5);
-      font-size: 11px;
-    }
-    [data-theme="light"] .kpi-pill {
-      background: #f9fafb;
-    }
-
-    .kpi-list {
+    .step p {
+      margin: 0;
       font-size: 12px;
-      color: var(--muted);
-      margin-top: 6px;
-    }
-    .kpi-list ul {
-      margin: 4px 0 0;
+      color: #d1d5db;
     }
 
+    /* Before / After */
+    .comparison {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .compare-card {
+      background: rgba(15,23,42,0.96);
+      border-radius: 16px;
+      padding: 12px 13px 11px;
+      border: 1px solid rgba(148,163,184,0.5);
+      font-size: 12px;
+    }
+
+    .compare-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 4px;
+    }
+
+    .compare-label.bad {
+      color: var(--danger);
+    }
+
+    .compare-label.good {
+      color: #4ade80;
+    }
+
+    .compare-title {
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+
+    .compare-list {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+    }
+
+    .compare-list li {
+      margin: 3px 0;
+      display: flex;
+      gap: 6px;
+      align-items: flex-start;
+      color: var(--muted);
+    }
+
+    .compare-icon {
+      width: 14px;
+      height: 18px;
+    }
+
+    /* Pricing */
+    .pricing-wrapper {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 16px;
+      align-items: flex-start;
+      margin-top: 16px;
+    }
+
+    .pricing-card {
+      background: radial-gradient(circle at top left, rgba(37,99,235,0.9), #020617);
+      border-radius: 20px;
+      padding: 16px 16px 14px;
+      border: 1px solid rgba(96,165,250,0.9);
+      color: #e5e7eb;
+      box-shadow: 0 28px 80px rgba(15,23,42,0.95);
+    }
+
+    .price-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #bfdbfe;
+      margin-bottom: 4px;
+    }
+
+    .price-value {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .price-note {
+      font-size: 11px;
+      color: #e5e7eb;
+      margin-bottom: 10px;
+      opacity: 0.9;
+    }
+
+    .price-line {
+      display: flex;
+      gap: 6px;
+      font-size: 12px;
+      color: #dbeafe;
+      margin-bottom: 4px;
+    }
+
+    .price-bullet {
+      font-size: 14px;
+      margin-top: 1px;
+    }
+
+    /* FAQ */
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .faq-item {
+      background: rgba(15,23,42,0.96);
+      border-radius: 14px;
+      padding: 11px 12px 10px;
+      border: 1px solid rgba(55,65,81,0.9);
+      font-size: 12px;
+    }
+
+    .faq-q {
+      font-weight: 500;
+      margin-bottom: 3px;
+      font-size: 12px;
+    }
+
+    .faq-a {
+      color: var(--muted);
+    }
+
+    /* CTA final */
+    .cta-final {
+      margin-top: 18px;
+      background: linear-gradient(120deg, rgba(15,23,42,0.98), rgba(37,99,235,0.8));
+      border-radius: 18px;
+      padding: 16px 16px 14px;
+      border: 1px solid rgba(96,165,250,0.9);
+      box-shadow: 0 28px 80px rgba(15,23,42,0.95);
+    }
+
+    .cta-final-title {
+      margin: 0 0 4px;
+      font-size: 17px;
+    }
+
+    .cta-final-text {
+      margin: 0 0 10px;
+      font-size: 13px;
+      color: #dbeafe;
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid rgba(31,41,55,0.9);
+      padding: 14px 20px 18px;
+      font-size: 11px;
+      color: var(--muted);
+      max-width: 1120px;
+      margin: 6px auto 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    /* Responsive */
     @media (max-width: 960px) {
-      body { flex-direction: column; }
-      .sidebar {
-        width: 100%;
-        height: auto;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        border-right: none;
-        border-bottom: 1px solid rgba(148,163,184,0.25);
+      .hero {
+        grid-template-columns: 1fr;
+        padding-top: 28px;
       }
-      .sidebar-footer { display: none; }
-      .content-wrapper { padding: 16px; }
-      .layout-grid { grid-template-columns: 1fr; }
+      .hero-right {
+        order: -1;
+      }
+      .hero-title {
+        font-size: 2rem;
+      }
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+      .how-grid {
+        grid-template-columns: 1fr;
+      }
+      .comparison {
+        grid-template-columns: 1fr;
+      }
+      .pricing-wrapper {
+        grid-template-columns: 1fr;
+      }
+      .faq-grid {
+        grid-template-columns: 1fr;
+      }
+      .nav-inner {
+        flex-wrap: wrap;
+      }
+      .nav-links {
+        display: none;
+      }
     }
   </style>
-
-  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-  <div class="sidebar">
-    <div>
-      <div class="brand">
-        <div class="brand-logo">U</div>
-        <div>
-          <div class="brand-text-title">Universal Process Twin</div>
-          <div class="brand-text-sub">Process Mining &amp; Automation Studio</div>
-        </div>
-      </div>
+  <div class="page">
+    <div class="orb blue"></div>
+    <div class="orb violet"></div>
+    <div class="orb orange"></div>
 
-      <div style="margin-top:24px;">
-        <div class="sidebar-section-title">Projet</div>
-        <div class="sidebar-links">
-          <a id="new-project"><span class="icon">🆕</span> Nouveau projet</a>
-          <a id="save-project"><span class="icon">💾</span> Sauvegarder projet</a>
-          <a id="load-project"><span class="icon">📁</span> Charger projet</a>
-        </div>
-      </div>
-
-      <div style="margin-top:20px;">
-        <div class="sidebar-section-title">Affichage</div>
-        <div class="sidebar-links">
-          <a id="toggle-mode"><span class="icon">🌓</span> Basculer mode sombre</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="sidebar-footer">
-      <div class="pill">
-        <span>⚡</span><span>IA Groq intégrée</span>
-      </div>
-      <div style="margin-top:6px;">Beta privée – conçu pour les data & ops teams.</div>
-    </div>
-  </div>
-
-  <div class="content-wrapper">
-    <div class="topbar">
-      <div class="topbar-left">
-        <h1>
-          📊 Vue d'ensemble
-          <span class="chip">KPI & Automation Studio</span>
-        </h1>
-        <p>Analyse ton process, vois les goulots d’étranglement et laisse l’IA proposer des automatisations concrètes.</p>
-      </div>
-      <div class="topbar-right">
-        <div id="auth-status-top"></div>
-        <div style="font-size:11px; opacity:0.8;">Sécurisé par token – un compte par utilisateur.</div>
-      </div>
-    </div>
-
-    <div class="layout-grid">
-      <div>
-        <!-- Auth -->
-        <div class="card">
-          <h3><span class="dot"></span> Compte utilisateur</h3>
-          <p class="card-subtitle">Crée un compte ou connecte-toi pour analyser tes fichiers.</p>
-          <div class="mapping-row">
-            <label>Email</label>
-            <input id="auth-email" type="email" placeholder="ton.email@exemple.com" />
-          </div>
-          <div class="mapping-row">
-            <label>Mot de passe</label>
-            <input id="auth-password" type="password" placeholder="••••••" />
-          </div>
-          <div style="margin-top:10px; display:flex; gap:8px;">
-            <button id="btn-login">Se connecter</button>
-            <button id="btn-register" class="secondary">Créer un compte</button>
-          </div>
-          <p id="auth-status" style="font-size:12px; color:var(--muted); margin-top:10px;"></p>
-        </div>
-
-        <!-- Import -->
-        <div class="card">
-          <h3><span class="dot"></span> 1. Importer un fichier</h3>
-          <p class="card-subtitle">Fichiers compatibles : <strong>CSV, XLS, XLSX</strong>. L’IA détecte automatiquement la structure.</p>
-          <input type="file" id="file-input" accept=".csv,.xls,.xlsx" />
-
-          <div class="mapping-row" style="margin-top:10px;">
-            <label>Contexte métier</label>
-            <select id="domain-select">
-              <option value="pipeline de vente / CRM">Pipeline de vente / CRM</option>
-              <option value="support client / tickets">Support client / tickets</option>
-              <option value="onboarding client">Onboarding client</option>
-              <option value="processus interne générique">Processus interne générique</option>
-            </select>
-          </div>
-
-          <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:8px;">
-            <button id="btn-simple">🔍 Analyser (simple)</button>
-            <button id="btn-ai">🤖 Analyser avec IA</button>
-            <button id="btn-autos">💡 Idées d'automatisation</button>
-            <button id="btn-pdf">📄 Exporter le rapport PDF</button>
+    <!-- NAV -->
+    <header class="nav">
+      <div class="nav-inner">
+        <div class="nav-left">
+          <div class="logo">U</div>
+          <div class="nav-brand-text">
+            <div class="nav-title">Universal Process Twin</div>
+            <div class="nav-sub">Process Mining &amp; Automation Studio</div>
           </div>
         </div>
+        <nav class="nav-links">
+          <a href="#pour-qui">Pour qui ?</a>
+          <a href="#features">Ce que ça fait</a>
+          <a href="#how">Comment ça marche</a>
+          <a href="#pricing">Tarifs</a>
+          <a href="#faq">FAQ</a>
+        </nav>
+        <div class="nav-right">
+          <div class="badge-beta">
+            <span class="badge-dot"></span>
+            <span>Beta privée • accès limité</span>
+          </div>
+          <a href="studio.html" class="btn-primary">Accéder au studio</a>
 
-        <!-- Mapping -->
-        <div id="mapping-card" class="card" style="display:none;">
-          <h3><span class="dot"></span> 2. Schéma du fichier (détection IA)</h3>
-          <p id="mapping-info" class="card-subtitle"></p>
+        </div>
+      </div>
+    </header>
 
-          <div class="mapping-row">
-            <label>Identifiant du cas (case_id)</label>
-            <select id="col-case"></select>
+    <!-- HERO -->
+    <main>
+      <section class="hero">
+        <div class="hero-left">
+          <div class="hero-pill">
+            <span class="emoji">⚡</span>
+            <span>IA Groq • Process Mining • Automatisation no-code</span>
           </div>
-          <div class="mapping-row">
-            <label>Étape du processus (step)</label>
-            <select id="col-step"></select>
+          <h1 class="hero-title">
+            Transforme tes fichiers <span class="highlight">en jumeaux vivants</span> de tes processus.
+          </h1>
+          <p class="hero-subtitle">
+            Universal Process Twin transforme un simple fichier Excel ou CSV en une carte vivante de ton processus :
+            graphes, KPI temps, <strong>rapport consulting</strong> généré par l’IA et
+            <strong>idées d’automatisations Make / Zapier</strong> prêtes à implémenter.
+          </p>
+          <div class="hero-cta-row">
+            <a href="index.html" class="btn btn-primary">
+              🚀 Ouvrir le studio (beta)
+            </a>
+            <a href="#features" class="btn btn-ghost">
+              👀 Voir ce que ça fait
+            </a>
           </div>
-          <div class="mapping-row">
-            <label>Timestamp (optionnel)</label>
-            <select id="col-ts"></select>
-          </div>
-          <p style="font-size: 11px; color: var(--muted); margin-top:8px;">
-            ℹ Le mapping est utilisé pour standardiser le fichier avant analyse.  
-            Tu peux accepter les choix IA ou les ajuster.
+          <p class="hero-note">
+            <span class="check">✓</span> Aucun setup compliqué • <span class="check">✓</span> Pas besoin d’équipe data •
+            <span class="check">✓</span> Exploite les fichiers que tu as déjà.
           </p>
         </div>
+
+        <div class="hero-right">
+          <div class="hero-card">
+            <div class="hero-card-header">
+              <div>
+                <div class="hero-card-title">Analyse pipeline – équipe sales B2B</div>
+                <div style="font-size:11px; color:var(--muted);">1 export HubSpot → 1 vue claire des goulots.</div>
+              </div>
+              <span class="hero-card-tag">Process Twin IA</span>
+            </div>
+            <div class="hero-kpi-row">
+              <div class="hero-kpi-pill">324 opportunités</div>
+              <div class="hero-kpi-pill">Cycle moyen : 18,6 j</div>
+              <div class="hero-kpi-pill">Étapes clés : 7</div>
+              <div class="hero-kpi-pill">Deals perdus : 27%</div>
+            </div>
+            <div class="hero-snippet">
+              <div class="hero-snippet-line">• 2 étapes concentrent 68% du temps total.</div>
+              <div class="hero-snippet-line">• 19% des leads n'ont jamais reçu de relance.</div>
+              <div class="hero-snippet-line">• 4 automatisations simples → ~10 h / semaine récupérées.</div>
+            </div>
+            <div class="hero-fake-graph">
+              <div class="hero-bar"></div>
+              <div class="hero-bar"></div>
+              <div class="hero-bar"></div>
+              <div class="hero-bar"></div>
+            </div>
+            <div class="hero-badge-bottom">
+              <span class="impact">“On a vu notre pipeline comme jamais en 15 minutes.”</span>
+              <span class="mini-pill">⚙️ Prêt pour Make / Zapier</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Social proof / Cibles -->
+      <div class="trust-row">
+        <span>Parfait pour :</span>
+        <div class="trust-tags">
+          <span class="trust-tag">Dirigeants &amp; Operations</span>
+          <span class="trust-tag">Sales / RevOps</span>
+          <span class="trust-tag">Data / Product</span>
+          <span class="trust-tag">Consultants &amp; freelances</span>
+        </div>
+        <div class="trust-dotline"></div>
       </div>
 
+      <!-- POUR QUI -->
+      <section id="pour-qui" class="section">
+        <div class="section-header">
+          <div>
+            <div class="section-eyebrow">Pour qui ?</div>
+            <h2 class="section-title">Un studio pensé pour ceux qui ont des fichiers, pas des data teams.</h2>
+            <p class="section-subtitle">
+              Tu as déjà des exports Excel, des rapports CSV, des données dans un CRM ou un outil support.
+              Universal Process Twin te montre enfin ce qui se passe entre chaque étape.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="card">
+            <div class="card-tag">Direction &amp; Ops</div>
+            <h3>Dirigeants &amp; responsables opérationnels</h3>
+            <p>
+              Visualise la vraie vie de tes processus : où les dossiers stagnent, quels services sont saturés,
+              où ton chiffre d’affaires fuit. En quelques clics, pas en 6 mois de projet BI.
+            </p>
+          </div>
+          <div class="card">
+            <div class="card-tag">Data &amp; Produit</div>
+            <h3>Data analysts, PM &amp; RevOps</h3>
+            <p>
+              Transforme un export brut en graphe de flux, KPI temps et rapport IA.
+              Moins de temps passé dans Excel, plus de temps dans la stratégie et la roadmap produit.
+            </p>
+          </div>
+          <div class="card">
+            <div class="card-tag">Consulting</div>
+            <h3>Consultants, freelances &amp; agences</h3>
+            <p>
+              Arrive chez ton client avec un diagnostic prêt : graphe, KPI, plan d’actions, idées d’automatisation.
+              Facture de la valeur, pas des heures de “nettoyage de fichiers”.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FEATURES -->
+      <section id="features" class="section">
+        <div class="section-header">
+          <div>
+            <div class="section-eyebrow">Ce que fait Universal Process Twin</div>
+            <h2 class="section-title">Ton jumeau numérique de process, piloté par l’IA.</h2>
+            <p class="section-subtitle">
+              De l’import du fichier jusqu’au plan d’automatisation, tout est pensé pour donner en quelques minutes
+              ce qu’un projet classique mettrait des semaines à produire.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="card">
+            <h3>🧠 Compréhension automatique du fichier</h3>
+            <p>
+              Uploade n’importe quel CSV / Excel : l’IA devine quelle colonne correspond à l’ID de cas,
+              à l’étape, au timestamp. Même si les noms de colonnes sont “moches” ou hétérogènes.
+            </p>
+          </div>
+          <div class="card">
+            <h3>📊 Graphe &amp; KPI avancés</h3>
+            <p>
+              Visualise le flux réel : étapes, transitions, fréquences.  
+              Vois le cycle time moyen, les étapes les plus lentes, les transitions qui explosent les délais.
+            </p>
+          </div>
+          <div class="card">
+            <h3>🤖 Rapport consulting + IA</h3>
+            <p>
+              Résumé exécutif, forces, faiblesses, risques, recommandations priorisées.
+              Un document lisible par un COMEX, généré à partir de tes données réelles.
+            </p>
+          </div>
+          <div class="card">
+            <h3>💡 Suggestions d’automatisation</h3>
+            <p>
+              Génération d’idées d’automatisations prêtes à implémenter dans Make, Zapier ou ton CRM :
+              déclencheurs, actions, outils et impact attendu.
+            </p>
+          </div>
+          <div class="card">
+            <h3>🧩 Pensé pour le no-code</h3>
+            <p>
+              Les scénarios proposés sont compatibles avec les stacks modernes (Make, Zapier, Notion, Airtable, HubSpot...).
+              Tu peux les implémenter sans écrire une seule ligne de code backend.
+            </p>
+          </div>
+          <div class="card">
+            <h3>📄 Export PDF pro</h3>
+            <p>
+              En un clic, récupère un PDF propre regroupant stats, KPI, mapping et rapport IA.
+              Parfait pour envoyer à ton client, ton équipe ou ta direction.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- HOW IT WORKS -->
+      <section id="how" class="section">
+        <div class="section-header">
+          <div>
+            <div class="section-eyebrow">Comment ça marche ?</div>
+            <h2 class="section-title">De “j’ai un fichier” à “j’ai un plan d’action” en 3 étapes.</h2>
+            <p class="section-subtitle">
+              Pas de déploiement complexe, pas de connecteurs obscurs. Juste toi, ton fichier, et un studio conçu
+              pour extraire la valeur de ce que tu as déjà.
+            </p>
+          </div>
+        </div>
+
+        <div class="how-grid">
+          <div class="step">
+            <div class="step-badge">1</div>
+            <h3>Tu importes un fichier</h3>
+            <p>
+              Export depuis ton CRM, ton outil de ticketing, ton outil de facturation ou une base interne.
+              CSV, Excel : tu drag & drop, le studio s’occupe du reste.
+            </p>
+          </div>
+          <div class="step">
+            <div class="step-badge">2</div>
+            <h3>L’IA comprend la structure</h3>
+            <p>
+              Universal Process Twin détecte l’ID de cas, les étapes, les timestamps.
+              Tu valides (ou ajustes) le mapping en quelques secondes, puis tu lances l’analyse.
+            </p>
+          </div>
+          <div class="step">
+            <div class="step-badge">3</div>
+            <h3>Tu obtiens graphes, KPI et plan IA</h3>
+            <p>
+              Le graphe apparaît, les KPI temps sont calculés, le rapport IA est généré,  
+              et les idées d’automatisation tombent. Tu peux exporter en PDF et passer à l’action.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- BEFORE / AFTER -->
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <div class="section-eyebrow">Avant / Après</div>
+            <h2 class="section-title">La différence entre “on pense que” et “on sait que”.</h2>
+            <p class="section-subtitle">
+              Ce que tu as aujourd’hui : des tableaux.  
+              Ce que tu obtiens : une vision dynamique des flux, avec un plan concret d’amélioration.
+            </p>
+          </div>
+        </div>
+
+        <div class="comparison">
+          <div class="compare-card">
+            <div class="compare-label bad">Avant – sans Universal Process Twin</div>
+            <div class="compare-title">Des fichiers, pas de vision.</div>
+            <ul class="compare-list">
+              <li><span class="compare-icon">⚪</span><span>Exports CSV qui dorment dans des dossiers.</span></li>
+              <li><span class="compare-icon">⚪</span><span>Réunions où chacun a sa version du processus.</span></li>
+              <li><span class="compare-icon">⚪</span><span>Hypothèses sur les goulots d’étranglement, mais peu de preuves.</span></li>
+              <li><span class="compare-icon">⚪</span><span>Automatisations au feeling, basées sur des ressentis.</span></li>
+            </ul>
+          </div>
+          <div class="compare-card">
+            <div class="compare-label good">Après – avec Universal Process Twin</div>
+            <div class="compare-title">Une carte vivante + un plan d’action.</div>
+            <ul class="compare-list">
+              <li><span class="compare-icon">🟢</span><span>Un graphe clair du processus réel, étape par étape.</span></li>
+              <li><span class="compare-icon">🟢</span><span>Cycle time, étapes lentes, transitions critiques calculés automatiquement.</span></li>
+              <li><span class="compare-icon">🟢</span><span>Rapport IA structuré, lisible par un dirigeant ou un client.</span></li>
+              <li><span class="compare-icon">🟢</span><span>Scénarios d’automatisation concrets, prêts à implémenter dans Make / Zapier.</span></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- PRICING -->
+      <section id="pricing" class="section">
+        <div class="section-header">
+          <div>
+            <div class="section-eyebrow">Tarifs & Accès</div>
+            <h2 class="section-title">Phase beta : outils premium, accès ultra limité.</h2>
+            <p class="section-subtitle">
+              Tu utilises un moteur IA/process mining digne d’un gros logiciel, mais encore en phase d’exploration.
+              En échange de ton feedback, tu profites d’un accès privilégié.
+            </p>
+          </div>
+        </div>
+
+        <div class="pricing-wrapper">
+          <div class="pricing-card">
+            <div class="price-label">Offre beta privée</div>
+            <div class="price-value">Gratuit <span style="font-size:13px; font-weight:400;">(temps limité)</span></div>
+            <div class="price-note">
+              Accès au studio pour tes fichiers internes.  
+              En échange : des retours honnêtes et des idées pour rendre l’outil encore plus utile.
+            </div>
+            <div class="price-line">
+              <span class="price-bullet">✓</span><span>Analyses illimitées sur tes CSV / Excel</span>
+            </div>
+            <div class="price-line">
+              <span class="price-bullet">✓</span><span>Graphe + KPI temps + rapport IA</span>
+            </div>
+            <div class="price-line">
+              <span class="price-bullet">✓</span><span>Suggestions d’automatisation Make / Zapier</span>
+            </div>
+            <div class="price-line">
+              <span class="price-bullet">✓</span><span>Export PDF prêt à partager</span>
+            </div>
+            <div class="price-line">
+              <span class="price-bullet">✓</span><span>Échanges directs avec le créateur (pour adapter l’outil à tes cas réels)</span>
+            </div>
+            <div style="margin-top:12px;">
+              <a href="index.html" class="btn btn-primary">🔐 Accéder au studio (beta)</a>
+            </div>
+          </div>
+
+          <div style="font-size:12px; color:var(--muted);">
+            <p><strong>La suite (vision à moyen terme) :</strong></p>
+            <p>• Offres payantes par équipe, avec espaces partagés et gestion des accès.</p>
+            <p>• Intégrations directes (HubSpot, Pipedrive, Zendesk, Notion, Airtable...).</p>
+            <p>• Génération de scénarios d’automatisation prêts à coller dans tes scénarios Make / Zapier.</p>
+            <p>• Branding marque blanche pour consultants et agences.</p>
+            <p style="margin-top:8px;">
+              En rejoignant la beta maintenant, tu es parmi les tout premiers à façonner l’outil.  
+              Tes besoins peuvent littéralement être intégrés dans la roadmap produit.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section id="faq" class="section">
+        <div class="section-header">
+          <div>
+            <div class="section-eyebrow">FAQ</div>
+            <h2 class="section-title">Questions fréquentes</h2>
+            <p class="section-subtitle">
+              Quelques réponses rapides. Si tu veux voir ce que ça donne vraiment, le plus simple reste
+              d’essayer avec un fichier de ton quotidien.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-grid">
+          <div class="faq-item">
+            <div class="faq-q">Est-ce que mes données sont stockées quelque part ?</div>
+            <div class="faq-a">
+              Les fichiers sont utilisés pour l’analyse pendant ta session.
+              Tu peux les anonymiser avant import (remplacer noms, emails par des IDs).
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">De quels types de fichiers ai-je besoin ?</div>
+            <div class="faq-a">
+              Un simple export CSV ou Excel suffit. Idéalement avec : un identifiant de cas (ex : id_opportunité),
+              un statut / étape, et une date (création, mise à jour, etc.).
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Dois-je être data engineer pour utiliser l’outil ?</div>
+            <div class="faq-a">
+              Non, c’est justement l’idée. Tu choisis ton fichier, tu valides le mapping proposé par l’IA et tu lances.
+              Le reste est présenté en langage métier.
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Sur quels types de processus ça marche ?</div>
+            <div class="faq-a">
+              Pipeline de vente, support client, onboarding, facturation, recrutement, production…
+              Dès que tu as une suite d’événements liés à des “cas” (dossiers, clients, tickets), ça fonctionne.
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">C’est un outil ou un service de consulting ?</div>
+            <div class="faq-a">
+              C’est un outil, mais conçu comme un “assistant de consulting”.
+              Tu peux l’utiliser seul ou l’intégrer dans tes missions si tu es consultant / freelance.
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Est-ce que je peux l’utiliser avec mes clients ?</div>
+            <div class="faq-a">
+              Oui, c’est même un des cas d’usage principaux.
+              Tu peux analyser leurs fichiers, générer des rapports et construire tes recommandations autour.
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA FINAL -->
+        <div class="cta-final">
+          <h2 class="cta-final-title">Prêt à voir ton processus comme jamais auparavant ?</h2>
+          <p class="cta-final-text">
+            Prends un fichier que tu utilises déjà (export CRM, support, commandes, onboarding) et fais un premier test.
+            Le but est simple : si après une analyse tu n’as rien appris de nouveau, l’outil n’est pas encore assez bon.
+          </p>
+          <a href="index.html" class="btn btn-primary">🚀 Lancer ma première analyse</a>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div>© <span id="year"></span> Universal Process Twin – Studio IA & process mining indépendant.</div>
       <div>
-        <div id="stats" class="card"></div>
-        <div id="kpi" class="card"></div>
-        <div id="network" class="card"></div>
-        <div id="automation" class="card"></div>
-        <div id="ai-report" class="card"></div>
+        Accès au dashboard : <a href="index.html">ouvrir le studio</a>
       </div>
-    </div>
+    </footer>
   </div>
 
-<script>
-  const API_BASE = "https://universal-process-twin-process-mining-ia.onrender.com";
-
-
-  const fileInput = document.getElementById("file-input");
-  const statsDiv = document.getElementById("stats");
-  const kpiDiv = document.getElementById("kpi");
-  const networkDiv = document.getElementById("network");
-  const aiReportDiv = document.getElementById("ai-report");
-  const automationDiv = document.getElementById("automation");
-  const btnSimple = document.getElementById("btn-simple");
-  const btnAi = document.getElementById("btn-ai");
-  const btnPdf = document.getElementById("btn-pdf");
-  const btnAutos = document.getElementById("btn-autos");
-  const domainSelect = document.getElementById("domain-select");
-
-  const mappingCard = document.getElementById("mapping-card");
-  const mappingInfo = document.getElementById("mapping-info");
-  const colCase = document.getElementById("col-case");
-  const colStep = document.getElementById("col-step");
-  const colTs = document.getElementById("col-ts");
-
-  const authEmailInput = document.getElementById("auth-email");
-  const authPasswordInput = document.getElementById("auth-password");
-  const authStatus = document.getElementById("auth-status");
-  const authStatusTop = document.getElementById("auth-status-top");
-  const btnLogin = document.getElementById("btn-login");
-  const btnRegister = document.getElementById("btn-register");
-
-  let lastAnalysis = null;
-  let lastColumns = [];
-  let lastGuess = null;
-
-  let authToken = localStorage.getItem("upt_token") || null;
-  let authEmail = localStorage.getItem("upt_email") || null;
-
-  function updateAuthStatus() {
-    if (authToken && authEmail) {
-      authStatus.textContent = "Connecté en tant que " + authEmail;
-      authStatusTop.innerHTML = "🔐 <span class='user-email'>" + authEmail + "</span>";
-    } else {
-      authStatus.textContent = "Non connecté. Crée un compte ou connecte-toi pour analyser des fichiers.";
-      authStatusTop.textContent = "Non connecté";
-    }
-  }
-
-  updateAuthStatus();
-
-  async function authAction(isRegister) {
-    const email = authEmailInput.value.trim();
-    const password = authPasswordInput.value;
-
-    if (!email || !password) {
-      alert("Email et mot de passe sont requis.");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("email", email);
-    formData.append("password", password);
-
-    const endpoint = isRegister ? "/register" : "/login";
-
-    try {
-      const res = await fetch(API_BASE + endpoint, {
-        method: "POST",
-        body: formData
-      });
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.detail || data.message || "Erreur d'authentification.");
-      }
-
-      if (isRegister) {
-        alert("Compte créé. Tu peux maintenant te connecter.");
-      } else {
-        authToken = data.token;
-        authEmail = data.email;
-        localStorage.setItem("upt_token", authToken);
-        localStorage.setItem("upt_email", authEmail);
-        alert("Connexion réussie.");
-      }
-      updateAuthStatus();
-    } catch (err) {
-      alert("Erreur : " + err.message);
-    }
-  }
-
-  btnLogin.onclick = () => authAction(false);
-  btnRegister.onclick = () => authAction(true);
-
-  function getProjects() {
-    try {
-      return JSON.parse(localStorage.getItem("upt_projects") || "{}");
-    } catch (e) {
-      console.error("Erreur parsing upt_projects :", e);
-      return {};
-    }
-  }
-
-  function setProjects(projects) {
-    localStorage.setItem("upt_projects", JSON.stringify(projects));
-  }
-
-  fileInput.addEventListener("change", async () => {
-    await runSmartImport();
-  });
-
-  async function runSmartImport() {
-    const file = fileInput.files[0];
-    if (!file) return;
-
-    if (!authToken) {
-      mappingInfo.innerHTML = "<span style='color:red;'>Connecte-toi d'abord pour analyser un fichier.</span>";
-      mappingCard.style.display = "block";
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    mappingInfo.innerHTML = "⏳ Détection des colonnes...";
-    mappingCard.style.display = "block";
-
-    try {
-      const headersDetect = authToken ? { "X-Auth-Token": authToken } : {};
-
-      const detectRes = await fetch(API_BASE + "/detect_columns", {
-        method: "POST",
-        body: formData,
-        headers: headersDetect
-      });
-
-      if (!detectRes.ok) {
-        const err = await detectRes.json().catch(() => ({}));
-        throw new Error(err.detail || "Erreur lors de la détection des colonnes.");
-      }
-
-      const detectData = await detectRes.json();
-      const cols = detectData.columns || [];
-      lastColumns = cols;
-
-      if (!cols.length) {
-        mappingInfo.innerHTML = "<span style='color:red;'>Aucune colonne détectée.</span>";
-        return;
-      }
-
-      const headersGuess = { "Content-Type": "application/json" };
-      if (authToken) headersGuess["X-Auth-Token"] = authToken;
-
-      const guessRes = await fetch(API_BASE + "/guess_structure", {
-        method: "POST",
-        headers: headersGuess,
-        body: JSON.stringify({ columns: cols })
-      });
-
-      if (!guessRes.ok) {
-        const err = await guessRes.json().catch(() => ({}));
-        throw new Error(err.detail || "Erreur lors de la détection IA.");
-      }
-
-      const guessData = await guessRes.json();
-      lastGuess = guessData;
-
-      populateMappingUI(cols, guessData);
-
-    } catch (err) {
-      console.error(err);
-      mappingInfo.innerHTML = `<span style="color:red;">Erreur : ${err.message}</span>`;
-    }
-  }
-
-  function populateMappingUI(columns, guess) {
-    [colCase, colStep, colTs].forEach(sel => {
-      sel.innerHTML = "";
-      const emptyOpt = document.createElement("option");
-      emptyOpt.value = "";
-      emptyOpt.textContent = "-- Aucune --";
-      sel.appendChild(emptyOpt);
-    });
-
-    columns.forEach(col => {
-      [colCase, colStep, colTs].forEach(sel => {
-        const opt = document.createElement("option");
-        opt.value = col;
-        opt.textContent = col;
-        sel.appendChild(opt);
-      });
-    });
-
-    const caseIdGuess = guess.case_id || "";
-    const stepGuess = guess.step || "";
-    const tsGuess = guess.timestamp || "";
-    const conf = parseFloat(guess.confidence || "0");
-
-    if (caseIdGuess && columns.includes(caseIdGuess)) colCase.value = caseIdGuess;
-    if (stepGuess && columns.includes(stepGuess)) colStep.value = stepGuess;
-    if (tsGuess && columns.includes(tsGuess)) colTs.value = tsGuess;
-
-    let badgeClass = "badge-low";
-    if (conf >= 0.75) badgeClass = "badge-good";
-    else if (conf >= 0.4) badgeClass = "badge-mid";
-
-    mappingInfo.innerHTML = `
-      Colonnes détectées : <code>${columns.join(", ")}</code><br>
-      Proposition IA :
-      <ul>
-        <li>case_id → <strong>${caseIdGuess || "?"}</strong></li>
-        <li>step → <strong>${stepGuess || "?"}</strong></li>
-        <li>timestamp → <strong>${tsGuess || "?"}</strong></li>
-      </ul>
-      Confiance IA :
-      <span class="badge ${badgeClass}">${isNaN(conf) ? "?" : conf.toFixed(2)}</span>
-    `;
-  }
-
-  function formatHours(h) {
-    if (h === null || h === undefined || isNaN(h)) return "—";
-    h = Number(h);
-    if (h < 1) return (h * 60).toFixed(1) + " min";
-    if (h < 48) return h.toFixed(1) + " h";
-    return (h / 24).toFixed(1) + " j";
-  }
-
-  async function submitAnalysis(useAI) {
-    const file = fileInput.files[0];
-    if (!file) return alert("Choisir un fichier.");
-    if (!authToken) {
-      alert("Connecte-toi d'abord.");
-      return;
-    }
-
-    statsDiv.innerHTML = "<p class='loading'>⏳ Analyse…</p>";
-    kpiDiv.innerHTML = "";
-    networkDiv.innerHTML = "";
-    aiReportDiv.innerHTML = "";
-    automationDiv.innerHTML = "";
-
-    const mappedCase = colCase.value;
-    const mappedStep = colStep.value;
-    const mappedTs = colTs.value;
-
-    const useMapping = mappedCase && mappedStep;
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    let endpoint;
-
-    if (useMapping) {
-      endpoint = "/analyze_mapped";
-      formData.append("case_col", mappedCase);
-      formData.append("step_col", mappedStep);
-      formData.append("ts_col", mappedTs || "");
-      formData.append("use_ai", useAI ? "true" : "false");
-    } else {
-      endpoint = useAI ? "/analyze_with_ai" : "/analyze";
-    }
-
-    const headers = authToken ? { "X-Auth-Token": authToken } : {};
-
-    try {
-      const res = await fetch(API_BASE + endpoint, {
-        method: "POST",
-        body: formData,
-        headers
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.detail || "Erreur lors de l'analyse.");
-      }
-
-      const data = await res.json();
-      lastAnalysis = data;
-
-      renderStats(data.stats);
-      renderGraph(data.graph);
-      if (data.kpi) renderKpi(data.kpi);
-      if (data.report) renderAI(data.report);
-    } catch (err) {
-      console.error(err);
-      statsDiv.innerHTML = `<p style='color:red;'>Erreur : ${err.message}</p>`;
-    }
-  }
-
-  btnSimple.onclick = () => submitAnalysis(false);
-  btnAi.onclick = () => submitAnalysis(true);
-
-  async function requestAutomations() {
-    if (!lastAnalysis) {
-      alert("Fais d'abord une analyse.");
-      return;
-    }
-    if (!authToken) {
-      alert("Connecte-toi d'abord.");
-      return;
-    }
-
-    automationDiv.innerHTML = "<p class='loading'>⏳ Génération des idées d'automatisation…</p>";
-
-    const body = {
-      stats: lastAnalysis.stats,
-      graph: lastAnalysis.graph,
-      kpi: lastAnalysis.kpi || {},
-      domain: domainSelect.value
-    };
-
-    try {
-      const res = await fetch(API_BASE + "/suggest_automations", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Auth-Token": authToken
-        },
-        body: JSON.stringify(body)
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.detail || "Erreur lors de la génération des automatisations.");
-      }
-
-      renderAutomation(data.ideas);
-    } catch (err) {
-      console.error(err);
-      automationDiv.innerHTML = `<p style="color:red;">Erreur : ${err.message}</p>`;
-    }
-  }
-
-  btnAutos.onclick = () => requestAutomations();
-
-  function renderStats(stats) {
-    statsDiv.innerHTML = `
-      <h3>📊 Statistiques de base</h3>
-      <p class="card-subtitle">Vue d’ensemble des cas et activités dans le processus analysé.</p>
-      <div class="kpi-row">
-        <div class="kpi-pill">Cas : <strong>${stats.num_cases}</strong></div>
-        <div class="kpi-pill">Événements : <strong>${stats.num_events}</strong></div>
-        <div class="kpi-pill">Étapes : <strong>${stats.num_steps}</strong></div>
-        <div class="kpi-pill">Transitions : <strong>${stats.num_transitions}</strong></div>
-      </div>
-    `;
-  }
-
-  function renderKpi(kpi) {
-    if (!kpi || !kpi.has_timestamp) {
-      kpiDiv.innerHTML = `
-        <h3>⏱ KPI avancés</h3>
-        <p class="card-subtitle">
-          Aucun timestamp exploitable détecté.  
-          Ajoute une colonne de dates (format ISO, ex: 2024-09-10 14:32:00) pour activer les KPI temps.
-        </p>
-      `;
-      return;
-    }
-
-    const cycle = kpi.cycle_time || {};
-    const slowSteps = kpi.slowest_steps || [];
-    const slowTrans = kpi.slowest_transitions || [];
-
-    kpiDiv.innerHTML = `
-      <h3>⏱ KPI avancés</h3>
-      <p class="card-subtitle">Temps de passage dans le processus, goulots d’étranglement et transitions lentes.</p>
-
-      <div class="kpi-row">
-        <div class="kpi-pill">Cycle moyen : <strong>${formatHours(cycle.avg_hours)}</strong></div>
-        <div class="kpi-pill">Min : <strong>${formatHours(cycle.min_hours)}</strong></div>
-        <div class="kpi-pill">Max : <strong>${formatHours(cycle.max_hours)}</strong></div>
-      </div>
-
-      <div class="kpi-list">
-        <strong>Étapes les plus lentes :</strong>
-        <ul>
-          ${slowSteps.length === 0 ? "<li>Aucune donnée suffisante.</li>" : slowSteps.map(s =>
-            `<li>${s.step} – ${formatHours(s.avg_hours)} (sur ${s.count} transitions)</li>`
-          ).join("")}
-        </ul>
-      </div>
-
-      <div class="kpi-list" style="margin-top:8px;">
-        <strong>Transitions les plus lentes :</strong>
-        <ul>
-          ${slowTrans.length === 0 ? "<li>Aucune donnée suffisante.</li>" : slowTrans.map(t =>
-            `<li>${t.from} → ${t.to} – ${formatHours(t.avg_hours)} (sur ${t.count} cas)</li>`
-          ).join("")}
-        </ul>
-      </div>
-    `;
-  }
-
-  function renderGraph(graph) {
-    const nodes = new vis.DataSet(
-      graph.nodes.map(n => ({
-        id: n.id,
-        label: `${n.id}\n(x${n.count})`,
-        shape: "box"
-      }))
-    );
-    const edges = new vis.DataSet(
-      graph.edges.map(e => ({
-        from: e.from,
-        to: e.to,
-        label: `x${e.count}`,
-        arrows: "to"
-      }))
-    );
-    new vis.Network(networkDiv, { nodes, edges }, {
-      physics: { stabilization: true },
-      edges: { smooth: true },
-      nodes: { font: { size: 12 } }
-    });
-  }
-
-  function renderAutomation(ideas) {
-    automationDiv.innerHTML = `
-      <h3>💡 Idées d'automatisation (IA)</h3>
-      <p class="card-subtitle">
-        Scénarios concrets à implémenter dans Make, Zapier ou ton CRM.  
-        Utilise-les comme base pour construire ton roadmap d’automatisation.
-      </p>
-      <p style="font-size:13px; color:var(--muted); white-space:pre-line;">${ideas}</p>
-    `;
-  }
-
-  function renderAI(report) {
-    aiReportDiv.innerHTML = `
-      <h3>🤖 Rapport IA</h3>
-      <p>${report.replace(/\n/g, '<br>')}</p>
-    `;
-  }
-
-  btnPdf.onclick = () => {
-    if (!lastAnalysis) {
-      alert("Faites d'abord une analyse pour générer un rapport.");
-      return;
-    }
-
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-
-    const stats = lastAnalysis.stats || {};
-    const reportText = lastAnalysis.report || "Aucun rapport IA généré (utilisez l'analyse avec IA).";
-    const kpi = lastAnalysis.kpi || {};
-    const columns = lastColumns || [];
-    const guess = lastGuess || null;
-
-    let y = 15;
-
-    doc.setFontSize(20);
-    doc.text("Universal Process Twin", 10, y);
-    y += 10;
-
-    doc.setFontSize(14);
-    doc.text("Rapport d'analyse de processus", 10, y);
-    y += 10;
-
-    doc.setFontSize(12);
-    doc.text("1. Statistiques du processus", 10, y);
-    y += 8;
-
-    doc.setFontSize(11);
-    doc.text(`• Nombre de cas          : ${stats.num_cases ?? "?"}`, 10, y); y += 6;
-    doc.text(`• Nombre d'événements    : ${stats.num_events ?? "?"}`, 10, y); y += 6;
-    doc.text(`• Nombre d'étapes        : ${stats.num_steps ?? "?"}`, 10, y); y += 6;
-    doc.text(`• Nombre de transitions  : ${stats.num_transitions ?? "?"}`, 10, y); y += 10;
-
-    if (kpi && kpi.has_timestamp && kpi.cycle_time) {
-      const c = kpi.cycle_time;
-      doc.setFontSize(12);
-      doc.text("2. KPI temps (cycle time)", 10, y); y += 8;
-      doc.setFontSize(11);
-      doc.text(`• Cycle moyen : ${formatHours(c.avg_hours)}`, 10, y); y += 6;
-      doc.text(`• Cycle minimum : ${formatHours(c.min_hours)}`, 10, y); y += 6;
-      doc.text(`• Cycle maximum : ${formatHours(c.max_hours)}`, 10, y); y += 10;
-    }
-
-    if (columns.length > 0) {
-      doc.setFontSize(12);
-      doc.text("3. Schéma détecté (IA)", 10, y);
-      y += 8;
-
-      doc.setFontSize(11);
-      doc.text(`Colonnes détectées : ${columns.join(", ")}`, 10, y);
-      y += 8;
-
-      if (guess) {
-        doc.text(`• case_id   : ${guess.case_id || "?"}`, 10, y); y += 6;
-        doc.text(`• step      : ${guess.step || "?"}`, 10, y); y += 6;
-        doc.text(`• timestamp : ${guess.timestamp || "?"}`, 10, y); y += 6;
-        doc.text(`• confiance IA : ${guess.confidence || "?"}`, 10, y); y += 10;
-      }
-    }
-
-    doc.addPage();
-    y = 15;
-
-    doc.setFontSize(12);
-    doc.text("4. Rapport d’analyse (IA)", 10, y);
-    y += 10;
-
-    doc.setFontSize(11);
-    const wrapped = doc.splitTextToSize(reportText, 180);
-    doc.text(wrapped, 10, y);
-
-    doc.save("rapport_process.pdf");
-  };
-
-  document.getElementById("toggle-mode").onclick = () => {
-    const html = document.querySelector("html");
-    html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark";
-  };
-
-  document.getElementById("new-project").onclick = () => {
-    lastAnalysis = null;
-    lastColumns = [];
-    lastGuess = null;
-    statsDiv.innerHTML = "";
-    kpiDiv.innerHTML = "";
-    networkDiv.innerHTML = "";
-    aiReportDiv.innerHTML = "";
-    automationDiv.innerHTML = "";
-    mappingCard.style.display = "none";
-    fileInput.value = "";
-  };
-
-  document.getElementById("save-project").onclick = () => {
-    if (!lastAnalysis) {
-      alert("Rien à sauvegarder (faites une analyse d'abord).");
-      return;
-    }
-
-    let name = prompt("Nom du projet à sauvegarder :");
-    if (!name) return;
-
-    const projects = getProjects();
-    projects[name] = {
-      analysis: lastAnalysis,
-      columns: lastColumns,
-      guess: lastGuess
-    };
-    setProjects(projects);
-
-    alert(`Projet « ${name} » sauvegardé.`);
-  };
-
-  document.getElementById("load-project").onclick = () => {
-    const projects = getProjects();
-    const names = Object.keys(projects);
-
-    if (!names.length) {
-      alert("Aucun projet enregistré pour l'instant.");
-      return;
-    }
-
-    const choice = prompt(
-      "Quel projet veux-tu charger ?\n\n" +
-      names.map((n, i) => `${i + 1}. ${n}`).join("\n") +
-      "\n\nTu peux taper soit le numéro, soit le nom exact."
-    );
-
-    if (!choice) return;
-
-    let projectName = choice;
-    const choiceIndex = parseInt(choice, 10);
-
-    if (!isNaN(choiceIndex) && choiceIndex >= 1 && choiceIndex <= names.length) {
-      projectName = names[choiceIndex - 1];
-    }
-
-    const proj = projects[projectName];
-    if (!proj) {
-      alert("Projet introuvable.");
-      return;
-    }
-
-    lastAnalysis = proj.analysis;
-    lastColumns = proj.columns || [];
-    lastGuess = proj.guess || null;
-
-    if (lastAnalysis.stats && lastAnalysis.graph) {
-      renderStats(lastAnalysis.stats);
-      renderGraph(lastAnalysis.graph);
-    }
-    if (lastAnalysis.kpi) {
-      renderKpi(lastAnalysis.kpi);
-    }
-    if (lastAnalysis.report) {
-      renderAI(lastAnalysis.report);
-    }
-
-    alert(`Projet « ${projectName} » chargé.`);
-  };
-</script>
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>

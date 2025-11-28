@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <title>Universal Process Twin – Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-soft: #020617;
+      --card-bg: #020617;
+      --card-border: #1e293b;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --primary: #38bdf8;
+      --primary-soft: #0ea5e9;
+      --accent: #f97316;
+    }
+
+    [data-theme="light"] {
+      --bg: #f3f4f6;
+      --bg-soft: #e5e7eb;
+      --card-bg: #ffffff;
+      --card-border: #e5e7eb;
+      --text: #111827;
+      --muted: #6b7280;
+      --primary: #2563eb;
+      --primary-soft: #2563eb14;
+      --accent: #f97316;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, var(--bg-soft), var(--bg));
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    .sidebar {
+      width: 260px;
+      background: linear-gradient(to bottom, #020617, #020617);
+      color: white;
+      padding: 24px 20px;
+      border-right: 1px solid rgba(148,163,184,0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      background: radial-gradient(circle at 30% 20%, #38bdf8, #6366f1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+    }
+    .brand-text-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .brand-text-sub {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6b7280;
+      margin-bottom: 4px;
+    }
+    .sidebar-links { margin-top: 4px; }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      color: #cbd5e1;
+      text-decoration: none;
+      font-size: 13px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, transform 0.1s;
+    }
+    .sidebar a span.icon {
+      width: 18px;
+      text-align: center;
+    }
+    .sidebar a:hover {
+      background: rgba(148,163,184,0.12);
+      color: #e5e7eb;
+      transform: translateX(2px);
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      font-size: 11px;
+      color: #6b7280;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      background: rgba(22,163,74,0.12);
+      color: #bbf7d0;
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+
+    .content-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 18px 22px;
+      gap: 16px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .topbar-left h1 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .topbar-left p {
+      margin: 2px 0 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .chip {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      border: 1px solid rgba(148,163,184,0.4);
+    }
+
+    .topbar-right {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: right;
+    }
+    .topbar-right span.user-email {
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .layout-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 430px) minmax(0, 1fr);
+      gap: 18px;
+      align-items: flex-start;
+    }
+
+    .card {
+      background: var(--card-bg);
+      padding: 18px 18px 16px;
+      border-radius: 14px;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 18px 45px rgba(15,23,42,0.45);
+      margin-bottom: 16px;
+    }
+    .card h3 {
+      margin: 0 0 6px;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card h3 span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--primary);
+    }
+    .card-subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    #network {
+      height: 360px;
+      border-radius: 10px;
+      background: radial-gradient(circle at top, #111827, #020617);
+    }
+
+    button {
+      padding: 9px 14px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+      box-shadow: 0 8px 18px rgba(37,99,235,0.35);
+    }
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 25px rgba(37,99,235,0.5);
+    }
+    button#btn-ai { background: #22c55e; box-shadow: 0 8px 18px rgba(34,197,94,0.35); }
+    button#btn-pdf { background: #9333ea; box-shadow: 0 8px 18px rgba(147,51,234,0.35); margin-left: 8px; }
+    button#btn-autos { background: #f97316; box-shadow: 0 8px 18px rgba(249,115,22,0.35); }
+    button.secondary {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid rgba(148,163,184,0.4);
+      box-shadow: none;
+    }
+    button.secondary:hover {
+      background: rgba(148,163,184,0.08);
+      box-shadow: none;
+    }
+
+    input[type="email"], input[type="password"], input[type="file"], select {
+      padding: 7px 9px;
+      border-radius: 8px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.6);
+      color: var(--text);
+      font-size: 13px;
+    }
+    [data-theme="light"] input[type="email"],
+    [data-theme="light"] input[type="password"],
+    [data-theme="light"] input[type="file"],
+    [data-theme="light"] select {
+      background: #ffffff;
+    }
+    input::placeholder { color: var(--muted); }
+
+    ul { padding-left: 20px; margin: 4px 0; }
+    .loading { font-weight: bold; color: var(--primary); }
+
+    .mapping-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 8px;
+      align-items: center;
+    }
+    .mapping-row label {
+      width: 210px;
+      font-weight: 500;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      margin-left: 8px;
+      border: 1px solid rgba(148,163,184,0.6);
+    }
+    .badge-good { background: #bbf7d0; color: #166534; }
+    .badge-mid  { background: #fef3c7; color: #92400e; }
+    .badge-low  { background: #fee2e2; color: #991b1b; }
+
+    #stats h3, #ai-report h3, #kpi h3, #automation h3 {
+      margin-top: 0;
+      margin-bottom: 6px;
+      font-size: 15px;
+    }
+    #ai-report p {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .kpi-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .kpi-pill {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.7);
+      border: 1px solid rgba(148,163,184,0.5);
+      font-size: 11px;
+    }
+    [data-theme="light"] .kpi-pill {
+      background: #f9fafb;
+    }
+
+    .kpi-list {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+    .kpi-list ul {
+      margin: 4px 0 0;
+    }
+
+    @media (max-width: 960px) {
+      body { flex-direction: column; }
+      .sidebar {
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        border-right: none;
+        border-bottom: 1px solid rgba(148,163,184,0.25);
+      }
+      .sidebar-footer { display: none; }
+      .content-wrapper { padding: 16px; }
+      .layout-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <div class="sidebar">
+    <div>
+      <div class="brand">
+        <div class="brand-logo">U</div>
+        <div>
+          <div class="brand-text-title">Universal Process Twin</div>
+          <div class="brand-text-sub">Process Mining &amp; Automation Studio</div>
+        </div>
+      </div>
+
+      <div style="margin-top:24px;">
+        <div class="sidebar-section-title">Projet</div>
+        <div class="sidebar-links">
+          <a id="new-project"><span class="icon">🆕</span> Nouveau projet</a>
+          <a id="save-project"><span class="icon">💾</span> Sauvegarder projet</a>
+          <a id="load-project"><span class="icon">📁</span> Charger projet</a>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;">
+        <div class="sidebar-section-title">Affichage</div>
+        <div class="sidebar-links">
+          <a id="toggle-mode"><span class="icon">🌓</span> Basculer mode sombre</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="pill">
+        <span>⚡</span><span>IA Groq intégrée</span>
+      </div>
+      <div style="margin-top:6px;">Beta privée – conçu pour les data & ops teams.</div>
+    </div>
+  </div>
+
+  <div class="content-wrapper">
+    <div class="topbar">
+      <div class="topbar-left">
+        <h1>
+          📊 Vue d'ensemble
+          <span class="chip">KPI & Automation Studio</span>
+        </h1>
+        <p>Analyse ton process, vois les goulots d’étranglement et laisse l’IA proposer des automatisations concrètes.</p>
+      </div>
+      <div class="topbar-right">
+        <div id="auth-status-top"></div>
+        <div style="font-size:11px; opacity:0.8;">Sécurisé par token – un compte par utilisateur.</div>
+      </div>
+    </div>
+
+    <div class="layout-grid">
+      <div>
+        <!-- Auth -->
+        <div class="card">
+          <h3><span class="dot"></span> Compte utilisateur</h3>
+          <p class="card-subtitle">Crée un compte ou connecte-toi pour analyser tes fichiers.</p>
+          <div class="mapping-row">
+            <label>Email</label>
+            <input id="auth-email" type="email" placeholder="ton.email@exemple.com" />
+          </div>
+          <div class="mapping-row">
+            <label>Mot de passe</label>
+            <input id="auth-password" type="password" placeholder="••••••" />
+          </div>
+          <div style="margin-top:10px; display:flex; gap:8px;">
+            <button id="btn-login">Se connecter</button>
+            <button id="btn-register" class="secondary">Créer un compte</button>
+          </div>
+          <p id="auth-status" style="font-size:12px; color:var(--muted); margin-top:10px;"></p>
+        </div>
+
+        <!-- Import -->
+        <div class="card">
+          <h3><span class="dot"></span> 1. Importer un fichier</h3>
+          <p class="card-subtitle">Fichiers compatibles : <strong>CSV, XLS, XLSX</strong>. L’IA détecte automatiquement la structure.</p>
+          <input type="file" id="file-input" accept=".csv,.xls,.xlsx" />
+
+          <div class="mapping-row" style="margin-top:10px;">
+            <label>Contexte métier</label>
+            <select id="domain-select">
+              <option value="pipeline de vente / CRM">Pipeline de vente / CRM</option>
+              <option value="support client / tickets">Support client / tickets</option>
+              <option value="onboarding client">Onboarding client</option>
+              <option value="processus interne générique">Processus interne générique</option>
+            </select>
+          </div>
+
+          <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:8px;">
+            <button id="btn-simple">🔍 Analyser (simple)</button>
+            <button id="btn-ai">🤖 Analyser avec IA</button>
+            <button id="btn-autos">💡 Idées d'automatisation</button>
+            <button id="btn-pdf">📄 Exporter le rapport PDF</button>
+          </div>
+        </div>
+
+        <!-- Mapping -->
+        <div id="mapping-card" class="card" style="display:none;">
+          <h3><span class="dot"></span> 2. Schéma du fichier (détection IA)</h3>
+          <p id="mapping-info" class="card-subtitle"></p>
+
+          <div class="mapping-row">
+            <label>Identifiant du cas (case_id)</label>
+            <select id="col-case"></select>
+          </div>
+          <div class="mapping-row">
+            <label>Étape du processus (step)</label>
+            <select id="col-step"></select>
+          </div>
+          <div class="mapping-row">
+            <label>Timestamp (optionnel)</label>
+            <select id="col-ts"></select>
+          </div>
+          <p style="font-size: 11px; color: var(--muted); margin-top:8px;">
+            ℹ Le mapping est utilisé pour standardiser le fichier avant analyse.  
+            Tu peux accepter les choix IA ou les ajuster.
+          </p>
+        </div>
+      </div>
+
+      <div>
+        <div id="stats" class="card"></div>
+        <div id="kpi" class="card"></div>
+        <div id="network" class="card"></div>
+        <div id="automation" class="card"></div>
+        <div id="ai-report" class="card"></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const API_BASE = "https://universal-process-twin-process-mining-ia.onrender.com";
+
+
+  const fileInput = document.getElementById("file-input");
+  const statsDiv = document.getElementById("stats");
+  const kpiDiv = document.getElementById("kpi");
+  const networkDiv = document.getElementById("network");
+  const aiReportDiv = document.getElementById("ai-report");
+  const automationDiv = document.getElementById("automation");
+  const btnSimple = document.getElementById("btn-simple");
+  const btnAi = document.getElementById("btn-ai");
+  const btnPdf = document.getElementById("btn-pdf");
+  const btnAutos = document.getElementById("btn-autos");
+  const domainSelect = document.getElementById("domain-select");
+
+  const mappingCard = document.getElementById("mapping-card");
+  const mappingInfo = document.getElementById("mapping-info");
+  const colCase = document.getElementById("col-case");
+  const colStep = document.getElementById("col-step");
+  const colTs = document.getElementById("col-ts");
+
+  const authEmailInput = document.getElementById("auth-email");
+  const authPasswordInput = document.getElementById("auth-password");
+  const authStatus = document.getElementById("auth-status");
+  const authStatusTop = document.getElementById("auth-status-top");
+  const btnLogin = document.getElementById("btn-login");
+  const btnRegister = document.getElementById("btn-register");
+
+  let lastAnalysis = null;
+  let lastColumns = [];
+  let lastGuess = null;
+
+  let authToken = localStorage.getItem("upt_token") || null;
+  let authEmail = localStorage.getItem("upt_email") || null;
+
+  function updateAuthStatus() {
+    if (authToken && authEmail) {
+      authStatus.textContent = "Connecté en tant que " + authEmail;
+      authStatusTop.innerHTML = "🔐 <span class='user-email'>" + authEmail + "</span>";
+    } else {
+      authStatus.textContent = "Non connecté. Crée un compte ou connecte-toi pour analyser des fichiers.";
+      authStatusTop.textContent = "Non connecté";
+    }
+  }
+
+  updateAuthStatus();
+
+  async function authAction(isRegister) {
+    const email = authEmailInput.value.trim();
+    const password = authPasswordInput.value;
+
+    if (!email || !password) {
+      alert("Email et mot de passe sont requis.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("password", password);
+
+    const endpoint = isRegister ? "/register" : "/login";
+
+    try {
+      const res = await fetch(API_BASE + endpoint, {
+        method: "POST",
+        body: formData
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.detail || data.message || "Erreur d'authentification.");
+      }
+
+      if (isRegister) {
+        alert("Compte créé. Tu peux maintenant te connecter.");
+      } else {
+        authToken = data.token;
+        authEmail = data.email;
+        localStorage.setItem("upt_token", authToken);
+        localStorage.setItem("upt_email", authEmail);
+        alert("Connexion réussie.");
+      }
+      updateAuthStatus();
+    } catch (err) {
+      alert("Erreur : " + err.message);
+    }
+  }
+
+  btnLogin.onclick = () => authAction(false);
+  btnRegister.onclick = () => authAction(true);
+
+  function getProjects() {
+    try {
+      return JSON.parse(localStorage.getItem("upt_projects") || "{}");
+    } catch (e) {
+      console.error("Erreur parsing upt_projects :", e);
+      return {};
+    }
+  }
+
+  function setProjects(projects) {
+    localStorage.setItem("upt_projects", JSON.stringify(projects));
+  }
+
+  fileInput.addEventListener("change", async () => {
+    await runSmartImport();
+  });
+
+  async function runSmartImport() {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    if (!authToken) {
+      mappingInfo.innerHTML = "<span style='color:red;'>Connecte-toi d'abord pour analyser un fichier.</span>";
+      mappingCard.style.display = "block";
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    mappingInfo.innerHTML = "⏳ Détection des colonnes...";
+    mappingCard.style.display = "block";
+
+    try {
+      const headersDetect = authToken ? { "X-Auth-Token": authToken } : {};
+
+      const detectRes = await fetch(API_BASE + "/detect_columns", {
+        method: "POST",
+        body: formData,
+        headers: headersDetect
+      });
+
+      if (!detectRes.ok) {
+        const err = await detectRes.json().catch(() => ({}));
+        throw new Error(err.detail || "Erreur lors de la détection des colonnes.");
+      }
+
+      const detectData = await detectRes.json();
+      const cols = detectData.columns || [];
+      lastColumns = cols;
+
+      if (!cols.length) {
+        mappingInfo.innerHTML = "<span style='color:red;'>Aucune colonne détectée.</span>";
+        return;
+      }
+
+      const headersGuess = { "Content-Type": "application/json" };
+      if (authToken) headersGuess["X-Auth-Token"] = authToken;
+
+      const guessRes = await fetch(API_BASE + "/guess_structure", {
+        method: "POST",
+        headers: headersGuess,
+        body: JSON.stringify({ columns: cols })
+      });
+
+      if (!guessRes.ok) {
+        const err = await guessRes.json().catch(() => ({}));
+        throw new Error(err.detail || "Erreur lors de la détection IA.");
+      }
+
+      const guessData = await guessRes.json();
+      lastGuess = guessData;
+
+      populateMappingUI(cols, guessData);
+
+    } catch (err) {
+      console.error(err);
+      mappingInfo.innerHTML = `<span style="color:red;">Erreur : ${err.message}</span>`;
+    }
+  }
+
+  function populateMappingUI(columns, guess) {
+    [colCase, colStep, colTs].forEach(sel => {
+      sel.innerHTML = "";
+      const emptyOpt = document.createElement("option");
+      emptyOpt.value = "";
+      emptyOpt.textContent = "-- Aucune --";
+      sel.appendChild(emptyOpt);
+    });
+
+    columns.forEach(col => {
+      [colCase, colStep, colTs].forEach(sel => {
+        const opt = document.createElement("option");
+        opt.value = col;
+        opt.textContent = col;
+        sel.appendChild(opt);
+      });
+    });
+
+    const caseIdGuess = guess.case_id || "";
+    const stepGuess = guess.step || "";
+    const tsGuess = guess.timestamp || "";
+    const conf = parseFloat(guess.confidence || "0");
+
+    if (caseIdGuess && columns.includes(caseIdGuess)) colCase.value = caseIdGuess;
+    if (stepGuess && columns.includes(stepGuess)) colStep.value = stepGuess;
+    if (tsGuess && columns.includes(tsGuess)) colTs.value = tsGuess;
+
+    let badgeClass = "badge-low";
+    if (conf >= 0.75) badgeClass = "badge-good";
+    else if (conf >= 0.4) badgeClass = "badge-mid";
+
+    mappingInfo.innerHTML = `
+      Colonnes détectées : <code>${columns.join(", ")}</code><br>
+      Proposition IA :
+      <ul>
+        <li>case_id → <strong>${caseIdGuess || "?"}</strong></li>
+        <li>step → <strong>${stepGuess || "?"}</strong></li>
+        <li>timestamp → <strong>${tsGuess || "?"}</strong></li>
+      </ul>
+      Confiance IA :
+      <span class="badge ${badgeClass}">${isNaN(conf) ? "?" : conf.toFixed(2)}</span>
+    `;
+  }
+
+  function formatHours(h) {
+    if (h === null || h === undefined || isNaN(h)) return "—";
+    h = Number(h);
+    if (h < 1) return (h * 60).toFixed(1) + " min";
+    if (h < 48) return h.toFixed(1) + " h";
+    return (h / 24).toFixed(1) + " j";
+  }
+
+  async function submitAnalysis(useAI) {
+    const file = fileInput.files[0];
+    if (!file) return alert("Choisir un fichier.");
+    if (!authToken) {
+      alert("Connecte-toi d'abord.");
+      return;
+    }
+
+    statsDiv.innerHTML = "<p class='loading'>⏳ Analyse…</p>";
+    kpiDiv.innerHTML = "";
+    networkDiv.innerHTML = "";
+    aiReportDiv.innerHTML = "";
+    automationDiv.innerHTML = "";
+
+    const mappedCase = colCase.value;
+    const mappedStep = colStep.value;
+    const mappedTs = colTs.value;
+
+    const useMapping = mappedCase && mappedStep;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    let endpoint;
+
+    if (useMapping) {
+      endpoint = "/analyze_mapped";
+      formData.append("case_col", mappedCase);
+      formData.append("step_col", mappedStep);
+      formData.append("ts_col", mappedTs || "");
+      formData.append("use_ai", useAI ? "true" : "false");
+    } else {
+      endpoint = useAI ? "/analyze_with_ai" : "/analyze";
+    }
+
+    const headers = authToken ? { "X-Auth-Token": authToken } : {};
+
+    try {
+      const res = await fetch(API_BASE + endpoint, {
+        method: "POST",
+        body: formData,
+        headers
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || "Erreur lors de l'analyse.");
+      }
+
+      const data = await res.json();
+      lastAnalysis = data;
+
+      renderStats(data.stats);
+      renderGraph(data.graph);
+      if (data.kpi) renderKpi(data.kpi);
+      if (data.report) renderAI(data.report);
+    } catch (err) {
+      console.error(err);
+      statsDiv.innerHTML = `<p style='color:red;'>Erreur : ${err.message}</p>`;
+    }
+  }
+
+  btnSimple.onclick = () => submitAnalysis(false);
+  btnAi.onclick = () => submitAnalysis(true);
+
+  async function requestAutomations() {
+    if (!lastAnalysis) {
+      alert("Fais d'abord une analyse.");
+      return;
+    }
+    if (!authToken) {
+      alert("Connecte-toi d'abord.");
+      return;
+    }
+
+    automationDiv.innerHTML = "<p class='loading'>⏳ Génération des idées d'automatisation…</p>";
+
+    const body = {
+      stats: lastAnalysis.stats,
+      graph: lastAnalysis.graph,
+      kpi: lastAnalysis.kpi || {},
+      domain: domainSelect.value
+    };
+
+    try {
+      const res = await fetch(API_BASE + "/suggest_automations", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Auth-Token": authToken
+        },
+        body: JSON.stringify(body)
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.detail || "Erreur lors de la génération des automatisations.");
+      }
+
+      renderAutomation(data.ideas);
+    } catch (err) {
+      console.error(err);
+      automationDiv.innerHTML = `<p style="color:red;">Erreur : ${err.message}</p>`;
+    }
+  }
+
+  btnAutos.onclick = () => requestAutomations();
+
+  function renderStats(stats) {
+    statsDiv.innerHTML = `
+      <h3>📊 Statistiques de base</h3>
+      <p class="card-subtitle">Vue d’ensemble des cas et activités dans le processus analysé.</p>
+      <div class="kpi-row">
+        <div class="kpi-pill">Cas : <strong>${stats.num_cases}</strong></div>
+        <div class="kpi-pill">Événements : <strong>${stats.num_events}</strong></div>
+        <div class="kpi-pill">Étapes : <strong>${stats.num_steps}</strong></div>
+        <div class="kpi-pill">Transitions : <strong>${stats.num_transitions}</strong></div>
+      </div>
+    `;
+  }
+
+  function renderKpi(kpi) {
+    if (!kpi || !kpi.has_timestamp) {
+      kpiDiv.innerHTML = `
+        <h3>⏱ KPI avancés</h3>
+        <p class="card-subtitle">
+          Aucun timestamp exploitable détecté.  
+          Ajoute une colonne de dates (format ISO, ex: 2024-09-10 14:32:00) pour activer les KPI temps.
+        </p>
+      `;
+      return;
+    }
+
+    const cycle = kpi.cycle_time || {};
+    const slowSteps = kpi.slowest_steps || [];
+    const slowTrans = kpi.slowest_transitions || [];
+
+    kpiDiv.innerHTML = `
+      <h3>⏱ KPI avancés</h3>
+      <p class="card-subtitle">Temps de passage dans le processus, goulots d’étranglement et transitions lentes.</p>
+
+      <div class="kpi-row">
+        <div class="kpi-pill">Cycle moyen : <strong>${formatHours(cycle.avg_hours)}</strong></div>
+        <div class="kpi-pill">Min : <strong>${formatHours(cycle.min_hours)}</strong></div>
+        <div class="kpi-pill">Max : <strong>${formatHours(cycle.max_hours)}</strong></div>
+      </div>
+
+      <div class="kpi-list">
+        <strong>Étapes les plus lentes :</strong>
+        <ul>
+          ${slowSteps.length === 0 ? "<li>Aucune donnée suffisante.</li>" : slowSteps.map(s =>
+            `<li>${s.step} – ${formatHours(s.avg_hours)} (sur ${s.count} transitions)</li>`
+          ).join("")}
+        </ul>
+      </div>
+
+      <div class="kpi-list" style="margin-top:8px;">
+        <strong>Transitions les plus lentes :</strong>
+        <ul>
+          ${slowTrans.length === 0 ? "<li>Aucune donnée suffisante.</li>" : slowTrans.map(t =>
+            `<li>${t.from} → ${t.to} – ${formatHours(t.avg_hours)} (sur ${t.count} cas)</li>`
+          ).join("")}
+        </ul>
+      </div>
+    `;
+  }
+
+  function renderGraph(graph) {
+    const nodes = new vis.DataSet(
+      graph.nodes.map(n => ({
+        id: n.id,
+        label: `${n.id}\n(x${n.count})`,
+        shape: "box"
+      }))
+    );
+    const edges = new vis.DataSet(
+      graph.edges.map(e => ({
+        from: e.from,
+        to: e.to,
+        label: `x${e.count}`,
+        arrows: "to"
+      }))
+    );
+    new vis.Network(networkDiv, { nodes, edges }, {
+      physics: { stabilization: true },
+      edges: { smooth: true },
+      nodes: { font: { size: 12 } }
+    });
+  }
+
+  function renderAutomation(ideas) {
+    automationDiv.innerHTML = `
+      <h3>💡 Idées d'automatisation (IA)</h3>
+      <p class="card-subtitle">
+        Scénarios concrets à implémenter dans Make, Zapier ou ton CRM.  
+        Utilise-les comme base pour construire ton roadmap d’automatisation.
+      </p>
+      <p style="font-size:13px; color:var(--muted); white-space:pre-line;">${ideas}</p>
+    `;
+  }
+
+  function renderAI(report) {
+    aiReportDiv.innerHTML = `
+      <h3>🤖 Rapport IA</h3>
+      <p>${report.replace(/\n/g, '<br>')}</p>
+    `;
+  }
+
+  btnPdf.onclick = () => {
+    if (!lastAnalysis) {
+      alert("Faites d'abord une analyse pour générer un rapport.");
+      return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const stats = lastAnalysis.stats || {};
+    const reportText = lastAnalysis.report || "Aucun rapport IA généré (utilisez l'analyse avec IA).";
+    const kpi = lastAnalysis.kpi || {};
+    const columns = lastColumns || [];
+    const guess = lastGuess || null;
+
+    let y = 15;
+
+    doc.setFontSize(20);
+    doc.text("Universal Process Twin", 10, y);
+    y += 10;
+
+    doc.setFontSize(14);
+    doc.text("Rapport d'analyse de processus", 10, y);
+    y += 10;
+
+    doc.setFontSize(12);
+    doc.text("1. Statistiques du processus", 10, y);
+    y += 8;
+
+    doc.setFontSize(11);
+    doc.text(`• Nombre de cas          : ${stats.num_cases ?? "?"}`, 10, y); y += 6;
+    doc.text(`• Nombre d'événements    : ${stats.num_events ?? "?"}`, 10, y); y += 6;
+    doc.text(`• Nombre d'étapes        : ${stats.num_steps ?? "?"}`, 10, y); y += 6;
+    doc.text(`• Nombre de transitions  : ${stats.num_transitions ?? "?"}`, 10, y); y += 10;
+
+    if (kpi && kpi.has_timestamp && kpi.cycle_time) {
+      const c = kpi.cycle_time;
+      doc.setFontSize(12);
+      doc.text("2. KPI temps (cycle time)", 10, y); y += 8;
+      doc.setFontSize(11);
+      doc.text(`• Cycle moyen : ${formatHours(c.avg_hours)}`, 10, y); y += 6;
+      doc.text(`• Cycle minimum : ${formatHours(c.min_hours)}`, 10, y); y += 6;
+      doc.text(`• Cycle maximum : ${formatHours(c.max_hours)}`, 10, y); y += 10;
+    }
+
+    if (columns.length > 0) {
+      doc.setFontSize(12);
+      doc.text("3. Schéma détecté (IA)", 10, y);
+      y += 8;
+
+      doc.setFontSize(11);
+      doc.text(`Colonnes détectées : ${columns.join(", ")}`, 10, y);
+      y += 8;
+
+      if (guess) {
+        doc.text(`• case_id   : ${guess.case_id || "?"}`, 10, y); y += 6;
+        doc.text(`• step      : ${guess.step || "?"}`, 10, y); y += 6;
+        doc.text(`• timestamp : ${guess.timestamp || "?"}`, 10, y); y += 6;
+        doc.text(`• confiance IA : ${guess.confidence || "?"}`, 10, y); y += 10;
+      }
+    }
+
+    doc.addPage();
+    y = 15;
+
+    doc.setFontSize(12);
+    doc.text("4. Rapport d’analyse (IA)", 10, y);
+    y += 10;
+
+    doc.setFontSize(11);
+    const wrapped = doc.splitTextToSize(reportText, 180);
+    doc.text(wrapped, 10, y);
+
+    doc.save("rapport_process.pdf");
+  };
+
+  document.getElementById("toggle-mode").onclick = () => {
+    const html = document.querySelector("html");
+    html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark";
+  };
+
+  document.getElementById("new-project").onclick = () => {
+    lastAnalysis = null;
+    lastColumns = [];
+    lastGuess = null;
+    statsDiv.innerHTML = "";
+    kpiDiv.innerHTML = "";
+    networkDiv.innerHTML = "";
+    aiReportDiv.innerHTML = "";
+    automationDiv.innerHTML = "";
+    mappingCard.style.display = "none";
+    fileInput.value = "";
+  };
+
+  document.getElementById("save-project").onclick = () => {
+    if (!lastAnalysis) {
+      alert("Rien à sauvegarder (faites une analyse d'abord).");
+      return;
+    }
+
+    let name = prompt("Nom du projet à sauvegarder :");
+    if (!name) return;
+
+    const projects = getProjects();
+    projects[name] = {
+      analysis: lastAnalysis,
+      columns: lastColumns,
+      guess: lastGuess
+    };
+    setProjects(projects);
+
+    alert(`Projet « ${name} » sauvegardé.`);
+  };
+
+  document.getElementById("load-project").onclick = () => {
+    const projects = getProjects();
+    const names = Object.keys(projects);
+
+    if (!names.length) {
+      alert("Aucun projet enregistré pour l'instant.");
+      return;
+    }
+
+    const choice = prompt(
+      "Quel projet veux-tu charger ?\n\n" +
+      names.map((n, i) => `${i + 1}. ${n}`).join("\n") +
+      "\n\nTu peux taper soit le numéro, soit le nom exact."
+    );
+
+    if (!choice) return;
+
+    let projectName = choice;
+    const choiceIndex = parseInt(choice, 10);
+
+    if (!isNaN(choiceIndex) && choiceIndex >= 1 && choiceIndex <= names.length) {
+      projectName = names[choiceIndex - 1];
+    }
+
+    const proj = projects[projectName];
+    if (!proj) {
+      alert("Projet introuvable.");
+      return;
+    }
+
+    lastAnalysis = proj.analysis;
+    lastColumns = proj.columns || [];
+    lastGuess = proj.guess || null;
+
+    if (lastAnalysis.stats && lastAnalysis.graph) {
+      renderStats(lastAnalysis.stats);
+      renderGraph(lastAnalysis.graph);
+    }
+    if (lastAnalysis.kpi) {
+      renderKpi(lastAnalysis.kpi);
+    }
+    if (lastAnalysis.report) {
+      renderAI(lastAnalysis.report);
+    }
+
+    alert(`Projet « ${projectName} » chargé.`);
+  };
+</script>
+</body>
+</html>
